@@ -236,7 +236,7 @@ const Dashboard = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Beneficiários
+                  Pessoas
                 </CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -342,22 +342,6 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            <Card 
-              className="cursor-pointer hover:shadow-md transition-shadow"
-              onClick={() => navigate('/annual-report')}
-            >
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Relatório Anual
-                </CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <p className="text-xs text-muted-foreground">
-                  Gerar relatório anual em PDF
-                </p>
-              </CardContent>
-            </Card>
           </div>
 
           {/* Secondary Metrics */}
@@ -485,7 +469,7 @@ const Dashboard = () => {
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Beneficiários cadastrados</span>
+                  <span className="text-sm">Pessoas cadastradas</span>
                   <Badge variant={metrics.totalPeople > 0 ? "default" : "secondary"}>
                     {metrics.totalPeople > 0 ? "✓ Concluído" : "Pendente"}
                   </Badge>

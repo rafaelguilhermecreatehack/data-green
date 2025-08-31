@@ -15,7 +15,8 @@ import {
   Settings, 
   ChevronLeft, 
   ChevronRight,
-  LogOut
+  LogOut,
+  FileText
 } from 'lucide-react';
 import {
   Tooltip,
@@ -43,6 +44,7 @@ const navItems: NavItem[] = [
   { name: 'Aportes', path: '/aportes', icon: TrendingUp },
   { name: 'Evolução Projetos', path: '/project-evolution', icon: BarChart3 },
   { name: 'Evolução Pessoas', path: '/person-evolution', icon: Activity },
+  { name: 'Relatórios', path: '/reports', icon: FileText },
   { name: 'Admin', path: '/admin', icon: Settings, adminOnly: true },
 ];
 

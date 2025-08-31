@@ -247,7 +247,7 @@ export const MapboxMap = ({ height = '400px' }: MapboxMapProps) => {
                       <span style="font-weight: 500;">${community.idh?.toFixed(3) || 'N/A'}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-                      <span>Beneficiários:</span>
+                      <span>Pessoas:</span>
                       <span style="font-weight: 500;">${community.total_beneficiarios || 0}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between;">

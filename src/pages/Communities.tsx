@@ -210,7 +210,7 @@ const Communities = () => {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total de Beneficiários</CardTitle>
+                <CardTitle className="text-sm font-medium">Total de Pessoas</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -294,7 +294,7 @@ const Communities = () => {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Localização</TableHead>
-                        <TableHead>Beneficiários</TableHead>
+                        <TableHead>Pessoas</TableHead>
                         <TableHead>IDH</TableHead>
                         <TableHead>Cadastrado em</TableHead>
                         <TableHead className="w-[70px]">Ações</TableHead>

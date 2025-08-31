@@ -39,7 +39,7 @@ const FeaturesSection = () => {
     },
     {
       icon: <Users className="w-6 h-6" />,
-      title: "Cadastro de Beneficiários",
+      title: "Cadastro de Pessoas",
       description: "Perfis detalhados com indicadores de saúde, educação e renda",
       features: ["Dados demográficos", "Histórico familiar", "Evolução pessoal"]
     },

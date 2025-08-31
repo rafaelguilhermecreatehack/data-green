@@ -75,6 +75,45 @@ const OngRegistrationForm = ({ onSuccess }: OngRegistrationFormProps) => {
     },
   });
 
+  const formatCNPJ = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+    return numbers
+      .slice(0, 14)
+      .replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5')
+      .replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{1})$/, '$1.$2.$3/$4-$5')
+      .replace(/(\d{2})(\d{3})(\d{3})(\d{3})$/, '$1.$2.$3/$4')
+      .replace(/(\d{2})(\d{3})(\d{2})$/, '$1.$2.$3')
+      .replace(/(\d{2})(\d{2})$/, '$1.$2');
+  };
+
+  const formatPhone = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length <= 10) {
+      return numbers
+        .replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3')
+        .replace(/(\d{2})(\d{4})(\d{3})$/, '($1) $2-$3')
+        .replace(/(\d{2})(\d{3})$/, '($1) $2')
+        .replace(/(\d{2})$/, '($1');
+    } else {
+      return numbers
+        .slice(0, 11)
+        .replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
+        .replace(/(\d{2})(\d{5})(\d{3})$/, '($1) $2-$3')
+        .replace(/(\d{2})(\d{4})$/, '($1) $2')
+        .replace(/(\d{2})(\d{3})$/, '($1) $2')
+        .replace(/(\d{2})$/, '($1');
+    }
+  };
+
+  const formatCEP = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+    return numbers
+      .slice(0, 8)
+      .replace(/(\d{5})(\d{3})/, '$1-$2')
+      .replace(/(\d{5})(\d{2})$/, '$1-$2')
+      .replace(/(\d{5})(\d{1})$/, '$1-$2');
+  };
+
   const onSubmit = async (data: OngRegistrationFormData) => {
     setIsLoading(true);
     try {
@@ -141,7 +180,14 @@ const OngRegistrationForm = ({ onSuccess }: OngRegistrationFormProps) => {
                 <FormItem>
                   <FormLabel>CNPJ</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="00.000.000/0000-00" />
+                    <Input 
+                    {...field} 
+                    placeholder="00.000.000/0000-00"
+                    onChange={(e) => {
+                      const formatted = formatCNPJ(e.target.value);
+                      field.onChange(formatted);
+                    }}
+                  />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -196,7 +242,14 @@ const OngRegistrationForm = ({ onSuccess }: OngRegistrationFormProps) => {
                 <FormItem>
                   <FormLabel>Telefone</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="(11) 99999-9999" />
+                    <Input 
+                    {...field} 
+                    placeholder="(11) 99999-9999"
+                    onChange={(e) => {
+                      const formatted = formatPhone(e.target.value);
+                      field.onChange(formatted);
+                    }}
+                  />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -259,7 +312,14 @@ const OngRegistrationForm = ({ onSuccess }: OngRegistrationFormProps) => {
                 <FormItem>
                   <FormLabel>CEP</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="00000-000" />
+                    <Input 
+                    {...field} 
+                    placeholder="00000-000"
+                    onChange={(e) => {
+                      const formatted = formatCEP(e.target.value);
+                      field.onChange(formatted);
+                    }}
+                  />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

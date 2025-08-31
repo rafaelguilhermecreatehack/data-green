@@ -12,7 +12,9 @@ import Investors from "./pages/Investors";
 import Aportes from "./pages/Aportes";
 import ProjectEvolution from "./pages/ProjectEvolution";
 import PersonEvolution from "./pages/PersonEvolution";
+import Reports from "./pages/Reports";
 import AnnualReport from "./pages/AnnualReport";
+import StrategicReport from "./pages/StrategicReport";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
@@ -34,7 +36,9 @@ const App = () => (
           <Route path="/aportes" element={<Aportes />} />
           <Route path="/project-evolution" element={<ProjectEvolution />} />
           <Route path="/person-evolution" element={<PersonEvolution />} />
+          <Route path="/reports" element={<Reports />} />
           <Route path="/annual-report" element={<AnnualReport />} />
+          <Route path="/strategic-report" element={<StrategicReport />} />
           <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 const investorSchema = z.object({
-  nome_investidor: z.string().min(3, "Nome do investidor deve ter pelo menos 3 caracteres"),
+  nome_investidor: z.string().optional().transform(val => val && val.trim() !== "" ? val : "Anônimo"),
   tipo_investidor: z.enum(["pessoa_fisica", "pessoa_juridica", "governo", "organismo_internacional"]),
   contato: z.string().min(1, "Contato é obrigatório").email("Digite um email válido"),
   documento: z.string().min(1, "Documento é obrigatório"),
@@ -199,7 +199,7 @@ const InvestorForm = ({ initialData, onSuccess }: InvestorFormProps) => {
               <FormItem>
                 <FormLabel>Nome do Investidor</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Ex: Empresa XYZ Ltda ou João Silva" />
+                  <Input {...field} placeholder="Ex: Empresa XYZ Ltda ou João Silva (deixe vazio para 'Anônimo')" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
