@@ -1,89 +1,105 @@
-import { Building2, Menu } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { Menu, X, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const navigation = [
-    { name: "Início", href: "/" },
-    { name: "ONGs", href: "/ongs" },
-    { name: "Projetos", href: "/projetos" },
-    { name: "Comunidades", href: "/comunidades" },
-    { name: "Dashboards", href: "/dashboard" },
-    { name: "Relatórios", href: "/relatorios" },
-  ];
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
 
-  return (
-    <header className="bg-background/95 backdrop-blur-md border-b border-border sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <Building2 className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-xl font-bold text-foreground">ONG Harmony</h1>
-              <p className="text-xs text-muted-foreground">Gestão Inteligente</p>
-            </div>
-          </div>
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            {navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-medium"
-              >
-                {item.name}
-              </a>
-            ))}
-          </nav>
+    return () => subscription.unsubscribe();
+  }, []);
 
-          {/* Actions */}
-          <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="sm" className="hidden md:flex">
-              Entrar
-            </Button>
-            <Button variant="hero" size="sm">
-              Cadastrar ONG
-            </Button>
-            
-            {/* Mobile menu button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              <Menu className="w-5 h-5" />
-            </Button>
-          </div>
-        </div>
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "Logout realizado com sucesso",
+        description: "Você foi desconectado da plataforma",
+      });
+      navigate("/");
+    } catch (error) {
+      toast({
+        title: "Erro no logout",
+        description: "Tente novamente",
+        variant: "destructive",
+      });
+    }
+  };
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-md">
-            <div className="py-4 space-y-2">
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className="block px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors duration-200"
-                >
-                  {item.name}
-                </a>
-              ))}
-              <div className="px-4 pt-2 space-y-2">
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  Entrar
-                </Button>
+  // If user is logged in, show minimal header
+  if (user) {
+    return (
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-4">
+          <div className="flex h-16 items-center justify-between">
+            {/* Logo */}
+            <div className="flex items-center space-x-2">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+                <span className="text-white font-bold text-sm">O</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="font-bold text-lg leading-none">ONG Harmony</span>
+                <span className="text-xs text-muted-foreground leading-none">Dashboard</span>
               </div>
             </div>
+
+            {/* User Actions */}
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-muted-foreground hidden sm:inline">
+                {user.email}
+              </span>
+              <Button variant="ghost" size="sm" onClick={handleLogout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sair
+              </Button>
+            </div>
           </div>
-        )}
+        </div>
+      </header>
+    );
+  }
+
+  // Default header for non-authenticated users (simplified)
+  return (
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto px-4">
+        <div className="flex h-16 items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center space-x-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+              <span className="text-white font-bold text-sm">O</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="font-bold text-lg leading-none">ONG Harmony</span>
+              <span className="text-xs text-muted-foreground leading-none">Gestão & Impacto</span>
+            </div>
+          </div>
+
+          {/* Simple branding text */}
+          <div className="hidden sm:block">
+            <span className="text-sm text-muted-foreground">
+              Plataforma de gestão para ONGs
+            </span>
+          </div>
+        </div>
       </div>
     </header>
   );
