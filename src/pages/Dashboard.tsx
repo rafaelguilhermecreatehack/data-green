@@ -5,6 +5,8 @@ import Header from "@/components/layout/Header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Users, Building, TrendingUp } from "lucide-react";
 import CommunityRegistrationForm from "@/components/forms/CommunityRegistrationForm";
 
 const Dashboard = () => {
@@ -102,15 +104,26 @@ const Dashboard = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="space-y-8">
           {/* Welcome Section */}
-          <div className="space-y-4">
-            <h1 className="text-3xl font-bold tracking-tight">
-              Bem-vindo ao Dashboard
-            </h1>
-            <p className="text-muted-foreground text-lg">
-              Olá, {user.email}! {userProfile?.papel === 'admin_global' 
-                ? 'Gerencie todos os aspectos da plataforma.' 
-                : 'Aqui você pode gerenciar todos os aspectos da sua organização.'}
-            </p>
+          <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">
+                Bem-vindo ao Dashboard
+              </h1>
+              <p className="text-muted-foreground text-lg">
+                Olá, {user.email}! {userProfile?.papel === 'admin_global' 
+                  ? 'Gerencie todos os aspectos da plataforma.' 
+                  : 'Aqui você pode gerenciar todos os aspectos da sua organização.'}
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={() => navigate("/communities")}
+              >
+                <Building className="mr-2 h-4 w-4" />
+                Gerenciar Comunidades
+              </Button>
+            </div>
           </div>
 
           {/* Key Metrics */}
@@ -120,7 +133,7 @@ const Dashboard = () => {
                 <CardTitle className="text-sm font-medium">
                   Projetos Ativos
                 </CardTitle>
-                <Badge variant="secondary">0</Badge>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">0</div>
@@ -135,7 +148,7 @@ const Dashboard = () => {
                 <CardTitle className="text-sm font-medium">
                   Beneficiários
                 </CardTitle>
-                <Badge variant="secondary">0</Badge>
+                <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">0</div>
@@ -150,7 +163,7 @@ const Dashboard = () => {
                 <CardTitle className="text-sm font-medium">
                   Aportes Recebidos
                 </CardTitle>
-                <Badge variant="secondary">R$ 0</Badge>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">R$ 0,00</div>
