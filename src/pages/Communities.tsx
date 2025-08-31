@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
+import PageHeader from "@/components/layout/PageHeader";
+import Breadcrumb from "@/components/layout/Breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -168,14 +170,14 @@ const Communities = () => {
       <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="space-y-8">
+          {/* Breadcrumb */}
+          <Breadcrumb items={[{ label: "Comunidades", current: true }]} />
+
           {/* Header Section */}
-          <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">Gestão de Comunidades</h1>
-              <p className="text-muted-foreground">
-                Gerencie as comunidades cadastradas na plataforma
-              </p>
-            </div>
+          <PageHeader 
+            title="Gestão de Comunidades"
+            description="Gerencie as comunidades cadastradas na plataforma"
+          >
             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
               <DialogTrigger asChild>
                 <Button>
@@ -190,7 +192,7 @@ const Communities = () => {
                 <CommunityForm onSuccess={handleFormSuccess} />
               </DialogContent>
             </Dialog>
-          </div>
+          </PageHeader>
 
           {/* Stats Cards */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
