@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "@/components/layout/Header";
+import { Layout } from "@/components/layout/Layout";
 import PageHeader from "@/components/layout/PageHeader";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import { Button } from "@/components/ui/button";
@@ -166,9 +166,8 @@ const Communities = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
+    <Layout>
+      <div className="container mx-auto px-4 py-8">
         <div className="space-y-8">
           {/* Breadcrumb */}
           <Breadcrumb items={[{ label: "Comunidades", current: true }]} />
@@ -366,7 +365,7 @@ const Communities = () => {
             </CardContent>
           </Card>
         </div>
-      </main>
+      </div>
 
       {/* Edit Dialog */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
@@ -401,7 +400,7 @@ const Communities = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </Layout>
   );
 };
 

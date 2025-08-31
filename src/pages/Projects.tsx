@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "@/components/layout/Header";
+import { Layout } from "@/components/layout/Layout";
 import PageHeader from "@/components/layout/PageHeader";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import { Button } from "@/components/ui/button";
@@ -184,15 +184,16 @@ const Projects = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
-      </div>
+      <Layout>
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+        </div>
+      </Layout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
-      <Header />
+    <Layout>
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <Breadcrumb items={[{ label: "Projetos", current: true }]} />
@@ -370,7 +371,7 @@ const Projects = () => {
           </DialogContent>
         </Dialog>
       </div>
-    </div>
+    </Layout>
   );
 };
 
