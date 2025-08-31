@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import Header from "@/components/layout/Header";
+import { Layout } from "@/components/layout/Layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -99,9 +99,8 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
+    <Layout>
+      <div className="container mx-auto px-4 py-8">
         <div className="space-y-8">
           {/* Welcome Section */}
           <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
@@ -237,7 +236,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
-      </main>
+      </div>
 
       {/* Community Setup Modal */}
       <Dialog open={needsCommunitySetup} onOpenChange={() => {}}>
@@ -248,7 +247,7 @@ const Dashboard = () => {
           <CommunityRegistrationForm onSuccess={handleCommunitySetupComplete} />
         </DialogContent>
       </Dialog>
-    </div>
+    </Layout>
   );
 };
 
