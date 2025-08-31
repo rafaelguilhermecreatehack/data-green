@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import DataGreenLogo from '@/assets/data-green-logo.svg';
 import { 
   Home, 
   Building, 
@@ -98,6 +99,7 @@ export const Sidebar: React.FC = () => {
     }
   };
 
+
   return (
     <TooltipProvider>
       <aside className={cn(
@@ -109,13 +111,7 @@ export const Sidebar: React.FC = () => {
           <div className="flex items-center justify-between p-4 border-b border-border">
             {!isCollapsed && (
               <div className="flex items-center space-x-2">
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">OH</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-bold text-sm leading-none">ONG Harmony</span>
-                  <span className="text-xs text-muted-foreground leading-none">Dashboard</span>
-                </div>
+                <img src={DataGreenLogo} alt="Data Green" className="h-10 w-auto" />
               </div>
             )}
             <Button

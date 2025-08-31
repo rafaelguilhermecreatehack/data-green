@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -13,7 +16,7 @@ const peopleSchema = z.object({
   nome_completo: z.string().min(3, "Nome completo deve ter pelo menos 3 caracteres"),
   data_nascimento: z.string().min(1, "Data de nascimento é obrigatória"),
   genero: z.enum(["masculino", "feminino", "outro", "prefiro_nao_informar"]).optional(),
-  id_projeto_vinculado: z.string().uuid("Selecione um projeto válido"),
+  projetos_vinculados: z.array(z.string().uuid()).min(1, "Selecione pelo menos um projeto"),
   id_comunidade: z.string().uuid("Selecione uma comunidade válida"),
   faixa_renda_familiar: z.enum(["ate_1_salario", "1_2_salarios", "2_3_salarios", "3_5_salarios", "acima_5_salarios"]).optional(),
   nivel_escolaridade: z.enum(["sem_escolaridade", "fundamental_incompleto", "fundamental_completo", "medio_incompleto", "medio_completo", "superior_incompleto", "superior_completo", "pos_graduacao"]).optional(),
@@ -29,7 +32,6 @@ interface Person {
   nome_completo: string;
   data_nascimento: string;
   genero?: string;
-  id_projeto_vinculado: string;
   id_comunidade: string;
   faixa_renda_familiar?: string;
   nivel_escolaridade?: string;
@@ -37,6 +39,12 @@ interface Person {
   indicadores_saude?: any;
   created_at: string;
   updated_at: string;
+  projetos?: Array<{
+    projeto_id: string;
+    nome_projeto: string;
+    data_vinculacao: string;
+    ativo: boolean;
+  }>;
 }
 
 interface Project {
@@ -86,6 +94,7 @@ const PeopleForm = ({ initialData, onSuccess }: PeopleFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
   const [communities, setCommunities] = useState<Community[]>([]);
+  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
   const { toast } = useToast();
   const isEditing = !!initialData;
 
@@ -95,7 +104,7 @@ const PeopleForm = ({ initialData, onSuccess }: PeopleFormProps) => {
       nome_completo: "",
       data_nascimento: "",
       genero: undefined,
-      id_projeto_vinculado: "",
+      projetos_vinculados: [],
       id_comunidade: "",
       faixa_renda_familiar: undefined,
       nivel_escolaridade: undefined,
@@ -146,11 +155,13 @@ const PeopleForm = ({ initialData, onSuccess }: PeopleFormProps) => {
   useEffect(() => {
     if (initialData) {
       const indicadores = initialData.indicadores_saude || {};
+      const projetosIds = initialData.projetos?.map(p => p.projeto_id) || [];
+      setSelectedProjects(projetosIds);
       form.reset({
         nome_completo: initialData.nome_completo,
         data_nascimento: initialData.data_nascimento,
         genero: initialData.genero as any,
-        id_projeto_vinculado: initialData.id_projeto_vinculado,
+        projetos_vinculados: projetosIds,
         id_comunidade: initialData.id_comunidade,
         faixa_renda_familiar: initialData.faixa_renda_familiar as any,
         nivel_escolaridade: initialData.nivel_escolaridade as any,
@@ -180,7 +191,6 @@ const PeopleForm = ({ initialData, onSuccess }: PeopleFormProps) => {
         nome_completo: data.nome_completo,
         data_nascimento: data.data_nascimento,
         genero: data.genero || null,
-        id_projeto_vinculado: data.id_projeto_vinculado,
         id_comunidade: data.id_comunidade,
         faixa_renda_familiar: data.faixa_renda_familiar || null,
         nivel_escolaridade: data.nivel_escolaridade || null,
@@ -189,7 +199,8 @@ const PeopleForm = ({ initialData, onSuccess }: PeopleFormProps) => {
       };
 
       if (isEditing && initialData) {
-        const { error } = await supabase
+        // Update person data
+        const { error: personError } = await supabase
           .from("pessoas")
           .update({
             ...personData,
@@ -197,13 +208,40 @@ const PeopleForm = ({ initialData, onSuccess }: PeopleFormProps) => {
           })
           .eq("id", initialData.id);
 
-        if (error) {
+        if (personError) {
           toast({
             title: "Erro ao atualizar pessoa",
-            description: error.message,
+            description: personError.message,
             variant: "destructive",
           });
           return;
+        }
+
+        // Update project relationships using SQL queries
+        // First, deactivate all current relationships
+        const { error: deactivateError } = await supabase
+          .from('pessoa_projeto' as any)
+          .update({ ativo: false })
+          .eq('id_pessoa', initialData.id);
+
+        if (deactivateError) {
+          console.error('Error deactivating relationships:', deactivateError);
+        }
+
+        // Then, insert/reactivate selected projects
+        for (const projectId of data.projetos_vinculados) {
+          const { error: relationError } = await supabase
+            .from('pessoa_projeto' as any)
+            .upsert({
+              id_pessoa: initialData.id,
+              id_projeto: projectId,
+              ativo: true,
+              data_vinculacao: new Date().toISOString().split('T')[0],
+            });
+
+          if (relationError) {
+            console.error('Error updating project relationship:', relationError);
+          }
         }
 
         toast({
@@ -211,17 +249,38 @@ const PeopleForm = ({ initialData, onSuccess }: PeopleFormProps) => {
           description: `${data.nome_completo} foi atualizada`,
         });
       } else {
-        const { error } = await supabase
+        // Insert new person
+        const { data: newPerson, error: personError } = await supabase
           .from("pessoas")
-          .insert([personData]);
+          .insert([personData])
+          .select()
+          .single();
 
-        if (error) {
+        if (personError) {
           toast({
             title: "Erro ao cadastrar pessoa",
-            description: error.message,
+            description: personError.message,
             variant: "destructive",
           });
           return;
+        }
+
+        // Insert project relationships
+        const relationships = data.projetos_vinculados.map(projectId => ({
+          id_pessoa: newPerson.id,
+          id_projeto: projectId,
+          ativo: true,
+          data_vinculacao: new Date().toISOString().split('T')[0],
+        }));
+
+        if (relationships.length > 0) {
+          const { error: relationError } = await supabase
+            .from('pessoa_projeto' as any)
+            .insert(relationships);
+
+          if (relationError) {
+            console.error('Error inserting project relationships:', relationError);
+          }
         }
 
         toast({
@@ -316,27 +375,64 @@ const PeopleForm = ({ initialData, onSuccess }: PeopleFormProps) => {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-4">
             <FormField
               control={form.control}
-              name="id_projeto_vinculado"
+              name="projetos_vinculados"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Projeto Vinculado</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o projeto" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
+                  <FormLabel>Projetos Vinculados</FormLabel>
+                  <div className="space-y-3">
+                    {/* Selected projects display */}
+                    {selectedProjects.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {selectedProjects.map((projectId) => {
+                          const project = projects.find(p => p.id === projectId);
+                          return project ? (
+                            <Badge key={projectId} variant="secondary" className="flex items-center gap-1">
+                              {project.nome_projeto}
+                              <X 
+                                className="h-3 w-3 cursor-pointer" 
+                                onClick={() => {
+                                  const newSelected = selectedProjects.filter(id => id !== projectId);
+                                  setSelectedProjects(newSelected);
+                                  field.onChange(newSelected);
+                                }}
+                              />
+                            </Badge>
+                          ) : null;
+                        })}
+                      </div>
+                    )}
+                    
+                    {/* Project selection */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-48 overflow-y-auto border rounded-md p-3">
                       {projects.map((project) => (
-                        <SelectItem key={project.id} value={project.id}>
-                          {project.nome_projeto}
-                        </SelectItem>
+                        <div key={project.id} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={project.id}
+                            checked={selectedProjects.includes(project.id)}
+                            onCheckedChange={(checked) => {
+                              let newSelected;
+                              if (checked) {
+                                newSelected = [...selectedProjects, project.id];
+                              } else {
+                                newSelected = selectedProjects.filter(id => id !== project.id);
+                              }
+                              setSelectedProjects(newSelected);
+                              field.onChange(newSelected);
+                            }}
+                          />
+                          <label 
+                            htmlFor={project.id} 
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                          >
+                            {project.nome_projeto}
+                          </label>
+                        </div>
                       ))}
-                    </SelectContent>
-                  </Select>
+                    </div>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}

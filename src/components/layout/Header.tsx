@@ -4,6 +4,7 @@ import { Menu, X, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import DataGreenLogo from "@/assets/data-green-logo.svg";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -52,9 +53,7 @@ const Header = () => {
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">D</span>
-              </div>
+              <img src={DataGreenLogo} alt="Data Green" className="h-8 w-auto" />
               <div className="flex flex-col">
                 <span className="font-bold text-lg leading-none">Data Green</span>
                 <span className="text-xs text-muted-foreground leading-none">Dashboard</span>
@@ -84,9 +83,7 @@ const Header = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-              <span className="text-white font-bold text-sm">D</span>
-            </div>
+            <img src={DataGreenLogo} alt="Data Green" className="h-8 w-auto" />
             <div className="flex flex-col">
               <span className="font-bold text-lg leading-none">Data Green</span>
               <span className="text-xs text-muted-foreground leading-none">Gestão & Impacto</span>

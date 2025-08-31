@@ -19,7 +19,6 @@ interface Person {
   nome_completo: string;
   data_nascimento: string;
   genero?: string;
-  id_projeto_vinculado: string;
   id_comunidade: string;
   faixa_renda_familiar?: string;
   nivel_escolaridade?: string;
@@ -27,9 +26,12 @@ interface Person {
   indicadores_saude?: any;
   created_at: string;
   updated_at: string;
-  projetos?: {
+  projetos?: Array<{
+    projeto_id: string;
     nome_projeto: string;
-  };
+    data_vinculacao: string;
+    ativo: boolean;
+  }>;
   comunidades?: {
     cidade: string;
     estado: string;
@@ -76,13 +78,11 @@ const People = () => {
 
   const fetchPeople = async () => {
     try {
-      const { data, error } = await supabase
+      // First, get all people with communities
+      const { data: peopleData, error: peopleError } = await supabase
         .from("pessoas")
         .select(`
           *,
-          projetos (
-            nome_projeto
-          ),
           comunidades (
             cidade,
             estado,
@@ -91,17 +91,47 @@ const People = () => {
         `)
         .order("created_at", { ascending: false });
 
-      if (error) {
+      if (peopleError) {
         toast({
           title: "Erro ao carregar pessoas",
-          description: error.message,
+          description: peopleError.message,
           variant: "destructive",
         });
         return;
       }
 
-      setPeople(data || []);
-      setFilteredPeople(data || []);
+      // Then, get project relationships for each person using raw SQL
+      const peopleWithProjects = await Promise.all(
+        (peopleData || []).map(async (person) => {
+          const { data: projects, error: projectsError } = await supabase
+            .from('pessoa_projeto' as any)
+            .select(`
+              id_projeto,
+              data_vinculacao,
+              ativo,
+              projetos!inner (
+                nome_projeto
+              )
+            `)
+            .eq('id_pessoa', person.id)
+            .eq('ativo', true);
+          
+          const formattedProjects = projects?.map((p: any) => ({
+            projeto_id: p.id_projeto,
+            nome_projeto: p.projetos.nome_projeto,
+            data_vinculacao: p.data_vinculacao,
+            ativo: p.ativo
+          })) || [];
+          
+          return {
+            ...person,
+            projetos: formattedProjects
+          } as Person;
+        })
+      );
+
+      setPeople(peopleWithProjects);
+      setFilteredPeople(peopleWithProjects);
     } catch (error) {
       toast({
         title: "Erro inesperado",
@@ -124,7 +154,9 @@ const People = () => {
       const filtered = people.filter(
         (person) =>
           person.nome_completo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          person.projetos?.nome_projeto.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          person.projetos?.some(projeto => 
+            projeto.nome_projeto.toLowerCase().includes(searchTerm.toLowerCase())
+          ) ||
           (person.comunidades && 
             `${person.comunidades.bairro} ${person.comunidades.cidade} ${person.comunidades.estado}`
               .toLowerCase()
@@ -310,10 +342,19 @@ const People = () => {
                   </CardHeader>
 
                   <CardContent className="space-y-3">
-                    {person.projetos && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Activity className="w-4 h-4" />
-                        <span className="line-clamp-1">{person.projetos.nome_projeto}</span>
+                    {person.projetos && person.projetos.length > 0 && (
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Activity className="w-4 h-4" />
+                          <span className="font-medium">Projetos:</span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {person.projetos.map((projeto) => (
+                            <Badge key={projeto.projeto_id} variant="secondary" className="text-xs">
+                              {projeto.nome_projeto}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                     )}
 

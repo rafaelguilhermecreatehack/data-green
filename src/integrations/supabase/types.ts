@@ -319,18 +319,16 @@ export type Database = {
       }
       pessoas: {
         Row: {
-          altura: number | null
           anos_estudo: number | null
           created_at: string | null
-          data_nascimento: string | null
+          data_nascimento: string
           faixa_renda_familiar: Database["public"]["Enums"]["income_range"] | null
           genero: string | null
           id: string
-          id_comunidade: string | null
-          id_projeto_vinculado: string | null
+          id_comunidade: string
+          indicadores_saude: Json | null
           nivel_escolaridade: Database["public"]["Enums"]["education_level"] | null
           nome_completo: string
-          peso: number | null
           updated_at: string | null
         }
         Insert: {

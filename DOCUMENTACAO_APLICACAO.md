@@ -1,8 +1,8 @@
-# ONG Harmony - Documentação da Aplicação
+# Data Green - Documentação da Aplicação
 
 ## Contexto da Aplicação
 
-**ONG Harmony** é uma plataforma completa de gestão para ONGs e organizações do terceiro setor, focada no monitoramento de impacto social e cálculo automatizado do Índice de Desenvolvimento Humano (IDH). A aplicação permite o gerenciamento completo de projetos sociais, beneficiários, investidores, aportes financeiros e geração de relatórios profissionais.
+**Data Green** é uma plataforma completa de gestão para ONGs e organizações do terceiro setor, focada no monitoramento de impacto social e cálculo automatizado do Índice de Desenvolvimento Humano (IDH). A aplicação permite o gerenciamento completo de projetos sociais, beneficiários, investidores, aportes financeiros e geração de relatórios profissionais.
 
 ### Propósito
 - Facilitar a gestão completa de ONGs e projetos sociais
@@ -576,6 +576,6 @@ CREATE FUNCTION can_access_financial_data() RETURNS BOOLEAN;
 
 *Documentação atualizada em: 31/08/2025 às 03:49*
 *Versão da aplicação: 1.0.0*
-*Desenvolvido para CreateHack - Grupo 17*
+*Desenvolvido para CreateHack - Grupo 17 - Data Green*
 *Análise técnica completa e profunda realizada*
 *Total de linhas analisadas: 2000+ linhas de código*
