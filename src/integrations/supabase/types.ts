@@ -349,6 +349,10 @@ export type Database = {
         Args: { community_id: string }
         Returns: number
       }
+      can_access_financial_data: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       can_access_ong: {
         Args: { ong_id: string }
         Returns: boolean
@@ -360,6 +364,10 @@ export type Database = {
       get_user_role: {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["Enums"]["user_role"]
+      }
+      log_sensitive_access: {
+        Args: { action: string; record_id: string; table_name: string }
+        Returns: undefined
       }
     }
     Enums: {
