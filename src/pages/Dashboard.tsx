@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Users, Building, TrendingUp } from "lucide-react";
+import { Users, Building, TrendingUp, FolderOpen, User, DollarSign } from "lucide-react";
 import CommunityRegistrationForm from "@/components/forms/CommunityRegistrationForm";
 
 const Dashboard = () => {
@@ -122,6 +122,34 @@ const Dashboard = () => {
               >
                 <Building className="mr-2 h-4 w-4" />
                 Gerenciar Comunidades
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate("/projects")}
+              >
+                <FolderOpen className="mr-2 h-4 w-4" />
+                Gerenciar Projetos
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate("/people")}
+              >
+                <User className="mr-2 h-4 w-4" />
+                Gerenciar Pessoas
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate("/investors")}
+              >
+                <DollarSign className="mr-2 h-4 w-4" />
+                Gerenciar Investidores
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate("/aportes")}
+              >
+                <TrendingUp className="mr-2 h-4 w-4" />
+                Gerenciar Aportes
               </Button>
             </div>
           </div>
