@@ -14,7 +14,7 @@ const HeroSection = () => {
         {/* Hero Content */}
         <div className="space-y-6">
           <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-tight">
-            ONG Harmony
+            Data Green
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
             Plataforma de gestão e monitoramento para ONGs comprometidas com o desenvolvimento social

@@ -53,10 +53,10 @@ const Header = () => {
             {/* Logo */}
             <div className="flex items-center space-x-2">
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">O</span>
+                <span className="text-white font-bold text-sm">D</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-lg leading-none">ONG Harmony</span>
+                <span className="font-bold text-lg leading-none">Data Green</span>
                 <span className="text-xs text-muted-foreground leading-none">Dashboard</span>
               </div>
             </div>
@@ -85,10 +85,10 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-              <span className="text-white font-bold text-sm">O</span>
+              <span className="text-white font-bold text-sm">D</span>
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-lg leading-none">ONG Harmony</span>
+              <span className="font-bold text-lg leading-none">Data Green</span>
               <span className="text-xs text-muted-foreground leading-none">Gestão & Impacto</span>
             </div>
           </div>

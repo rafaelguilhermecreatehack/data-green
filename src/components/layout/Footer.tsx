@@ -10,7 +10,7 @@ const Footer = () => {
             <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
               <Building2 className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-lg font-bold">ONG Harmony</span>
+            <span className="text-lg font-bold">Data Green</span>
           </div>
           <p className="text-muted-foreground text-sm leading-relaxed">
             Plataforma completa para gestão de ONGs, projetos sociais e monitoramento de impacto. 
@@ -36,7 +36,7 @@ const Footer = () => {
         <div className="border-t border-border mt-8 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <p className="text-sm text-muted-foreground">
-              © 2024 ONG Harmony. Todos os direitos reservados.
+              © 2024 Data Green. Todos os direitos reservados.
             </p>
             <p className="text-sm text-muted-foreground">
               Feito com ❤️ para o terceiro setor brasileiro

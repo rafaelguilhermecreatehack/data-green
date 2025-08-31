@@ -65,7 +65,7 @@ const handler = async (req: Request): Promise<Response> => {
     };
 
     const emailContent = `
-      <h1>Nova Solicitação de Cadastro de ONG - ONG Harmony</h1>
+      <h1>Nova Solicitação de Cadastro de ONG - Data Green</h1>
       
       <h2>📋 Dados da Organização</h2>
       <p><strong>Nome da ONG:</strong> ${registrationData.nomeOng}</p>
@@ -94,11 +94,11 @@ const handler = async (req: Request): Promise<Response> => {
       
       <hr style="margin: 20px 0;">
       <p><small><strong>Data do Cadastro:</strong> ${new Date(registrationData.timestamp).toLocaleString('pt-BR')}</small></p>
-      <p><small>Este cadastro foi enviado através da plataforma ONG Harmony.</small></p>
+      <p><small>Este cadastro foi enviado através da plataforma Data Green.</small></p>
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "ONG Harmony <onboarding@resend.dev>",
+      from: "Data Green <onboarding@resend.dev>",
       to: ["rafael.guilherme.createhack@gmail.com"],
       subject: `Nova Solicitação de Cadastro: ${registrationData.nomeOng}`,
       html: emailContent,
@@ -108,7 +108,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send confirmation email to the ONG
     const confirmationEmailContent = `
-      <h1>Cadastro Recebido - ONG Harmony</h1>
+      <h1>Cadastro Recebido - Data Green</h1>
       
       <p>Olá, <strong>${registrationData.responsavelNome}</strong>!</p>
       
@@ -125,16 +125,16 @@ const handler = async (req: Request): Promise<Response> => {
       <p>Agradecemos o interesse em nossa plataforma!</p>
       
       <p>Atenciosamente,<br>
-      <strong>Equipe ONG Harmony</strong></p>
+      <strong>Equipe Data Green</strong></p>
       
       <hr>
       <p><small>Data: ${new Date(registrationData.timestamp).toLocaleString('pt-BR')}</small></p>
     `;
 
     await resend.emails.send({
-      from: "ONG Harmony <onboarding@resend.dev>",
+      from: "Data Green <onboarding@resend.dev>",
       to: [registrationData.responsavelEmail],
-      subject: "Cadastro Recebido - ONG Harmony",
+      subject: "Cadastro Recebido - Data Green",
       html: confirmationEmailContent,
     });
 
