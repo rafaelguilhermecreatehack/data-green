@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader2 } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 
 const formSchema = z.object({
   nome: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -28,10 +28,22 @@ interface Ong {
   nome_fantasia: string;
 }
 
+// Debounce utility function
+const debounce = (func: Function, wait: number) => {
+  let timeout: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(null, args), wait);
+  };
+};
+
 export const UserRegistrationForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [ongs, setOngs] = useState<Ong[]>([]);
   const [loadingOngs, setLoadingOngs] = useState(true);
+  const [emailExists, setEmailExists] = useState(false);
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+  const [emailCheckStatus, setEmailCheckStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle');
   const { toast } = useToast();
 
   const form = useForm<FormData>({
@@ -44,6 +56,76 @@ export const UserRegistrationForm = () => {
       id_ong_vinculada: "",
     },
   });
+
+  // Real-time email validation
+  const checkEmailExists = async (email: string) => {
+    if (!email || email.length < 5 || !email.includes('@')) {
+      setEmailCheckStatus('idle');
+      setEmailExists(false);
+      return;
+    }
+
+    setIsCheckingEmail(true);
+    setEmailCheckStatus('checking');
+    
+    try {
+      const { data, error } = await supabase
+        .from('usuarios')
+        .select('email, id_ong_vinculada')
+        .eq('email', email.toLowerCase())
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Erro ao verificar email:', error);
+        setEmailCheckStatus('idle');
+        return;
+      }
+
+      const exists = !!data;
+      setEmailExists(exists);
+      setEmailCheckStatus(exists ? 'taken' : 'available');
+      
+      if (exists) {
+        // Get ONG name for better user feedback
+        const { data: ongData } = await supabase
+          .from('ongs')
+          .select('nome_fantasia')
+          .eq('id', data.id_ong_vinculada)
+          .single();
+        
+        const ongName = ongData?.nome_fantasia || 'uma ONG';
+        form.setError('email', {
+          type: 'manual',
+          message: `Este email já está registrado para ${ongName}. Deseja fazer login?`
+        });
+      } else {
+        form.clearErrors('email');
+      }
+    } catch (error) {
+      console.error('Erro ao verificar email:', error);
+      setEmailCheckStatus('idle');
+    } finally {
+      setIsCheckingEmail(false);
+    }
+  };
+
+  // Debounce email check
+  const debouncedEmailCheck = useCallback(
+    debounce((email: string) => checkEmailExists(email), 800),
+    []
+  );
+
+  // Watch email field changes
+  const emailValue = form.watch('email');
+  useEffect(() => {
+    if (emailValue && emailValue.length > 0) {
+      debouncedEmailCheck(emailValue);
+    } else {
+      setEmailExists(false);
+      setEmailCheckStatus('idle');
+      form.clearErrors('email');
+    }
+  }, [emailValue, debouncedEmailCheck, form]);
 
   useEffect(() => {
     const fetchOngs = async () => {
@@ -73,21 +155,40 @@ export const UserRegistrationForm = () => {
   }, [toast]);
 
   const onSubmit = async (data: FormData) => {
+    // Prevent submission if email is known to exist
+    if (emailExists || emailCheckStatus === 'taken') {
+      toast({
+        title: "Email indisponível",
+        description: "Este email já está registrado no sistema. Escolha outro email.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      // Check if email already exists in users table
+      // Double-check email doesn't exist (in case of race conditions)
       const { data: existingUser } = await supabase
         .from("usuarios")
-        .select("email")
-        .eq("email", data.email)
-        .single();
+        .select("email, id_ong_vinculada")
+        .eq("email", data.email.toLowerCase())
+        .maybeSingle();
 
       if (existingUser) {
+        const { data: ongData } = await supabase
+          .from('ongs')
+          .select('nome_fantasia')
+          .eq('id', existingUser.id_ong_vinculada)
+          .single();
+        
+        const ongName = ongData?.nome_fantasia || 'uma ONG';
         toast({
           title: "Email já cadastrado",
-          description: "Este email já está registrado no sistema.",
+          description: `Este email já está registrado para ${ongName}.`,
           variant: "destructive",
         });
+        setEmailCheckStatus('taken');
+        setEmailExists(true);
         return;
       }
 
@@ -166,9 +267,36 @@ export const UserRegistrationForm = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="joao@ong.com" {...field} />
+                  <div className="relative">
+                    <Input 
+                      type="email" 
+                      placeholder="joao@ong.com" 
+                      {...field}
+                      className={`pr-10 ${
+                        emailCheckStatus === 'taken' ? 'border-destructive focus:border-destructive' : 
+                        emailCheckStatus === 'available' ? 'border-green-500 focus:border-green-500' : ''
+                      }`}
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      {emailCheckStatus === 'checking' && (
+                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                      )}
+                      {emailCheckStatus === 'available' && (
+                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                      )}
+                      {emailCheckStatus === 'taken' && (
+                        <XCircle className="h-4 w-4 text-destructive" />
+                      )}
+                    </div>
+                  </div>
                 </FormControl>
                 <FormMessage />
+                {emailCheckStatus === 'available' && !form.formState.errors.email && (
+                  <p className="text-sm text-green-600 flex items-center gap-1">
+                    <CheckCircle2 className="h-3 w-3" />
+                    Email disponível
+                  </p>
+                )}
               </FormItem>
             )}
           />
@@ -230,17 +358,29 @@ export const UserRegistrationForm = () => {
         <Button 
           type="submit" 
           className="w-full" 
-          disabled={isSubmitting || loadingOngs}
+          disabled={isSubmitting || loadingOngs || emailExists || emailCheckStatus === 'taken'}
         >
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Criando usuário...
             </>
+          ) : emailExists || emailCheckStatus === 'taken' ? (
+            <>
+              <XCircle className="mr-2 h-4 w-4" />
+              Email Indisponível
+            </>
           ) : (
             "Criar Usuário Master"
           )}
         </Button>
+        
+        {(emailExists || emailCheckStatus === 'taken') && (
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <AlertCircle className="h-4 w-4" />
+            <span>O email escolhido já está em uso. Escolha outro email para continuar.</span>
+          </div>
+        )}
       </form>
     </Form>
   );
