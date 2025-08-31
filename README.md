@@ -1,73 +1,236 @@
-# Welcome to your Lovable project
+# Data Green 🌱
 
-## Project info
+> **Plataforma completa de gestão para ONGs e organizações do terceiro setor**
 
-**URL**: https://lovable.dev/projects/fe577cb0-540f-48c4-be6b-33c6ff96bc17
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-## How can I edit this code?
+## 📋 Sobre o Projeto
 
-There are several ways of editing your application.
+**Data Green** é uma plataforma inovadora desenvolvida para facilitar a gestão completa de ONGs e organizações do terceiro setor. Com foco no monitoramento de impacto social e cálculo automatizado do Índice de Desenvolvimento Humano (IDH), a aplicação oferece uma solução completa para:
 
-**Use Lovable**
+- 🎯 **Gestão de Projetos Sociais** - Controle completo do ciclo de vida dos projetos
+- 👥 **Gerenciamento de Beneficiários** - Acompanhamento detalhado de pessoas impactadas
+- 💰 **Controle Financeiro** - Gestão de investidores e aportes por projeto
+- 📊 **Relatórios Estratégicos** - Geração de PDFs profissionais para stakeholders
+- 🗺️ **Visualização Geográfica** - Mapas interativos das comunidades atendidas
+- 📈 **Cálculo Automático de IDH** - Baseado em dados reais dos beneficiários
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/fe577cb0-540f-48c4-be6b-33c6ff96bc17) and start prompting.
+## 🚀 Funcionalidades Principais
 
-Changes made via Lovable will be committed automatically to this repo.
+### ✅ **CRUD Completo**
+- **Comunidades** - Gestão de localidades com cálculo automático de IDH
+- **Projetos** - Controle de status, orçamento e categorização
+- **Pessoas** - Relacionamento N:N com projetos e indicadores de saúde
+- **Investidores** - Gestão de diferentes tipos de investidores
+- **Aportes** - Controle financeiro detalhado por projeto
 
-**Use your preferred IDE**
+### 📊 **Sistema de Evolução**
+- **Evolução de Projetos** - Acompanhamento de marcos e desafios
+- **Evolução de Pessoas** - Indicadores de saúde, educação e renda
+- **Impacto no IDH** - Recálculo automático baseado em mudanças
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 📋 **Relatórios Profissionais**
+- **Relatórios Anuais** - Transparência organizacional completa
+- **Relatórios Estratégicos** - Apresentações para investidores
+- **Dashboard Interativo** - Métricas em tempo real
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🛠️ Stack Tecnológico
 
-Follow these steps:
+### **Frontend**
+- **React 18.3.1** com TypeScript
+- **Vite 5.4.19** para build otimizado
+- **Tailwind CSS 3.4.17** + shadcn/ui para design system
+- **React Router DOM 6.30.1** para roteamento
+- **TanStack React Query 5.83.0** para gerenciamento de estado
+- **React Hook Form 7.61.1** + Zod 3.25.76 para formulários
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### **Backend & Infraestrutura**
+- **Supabase** (PostgreSQL + Auth + Edge Functions)
+- **Row Level Security (RLS)** implementado
+- **Triggers automáticos** para cálculos de IDH
+- **Real-time subscriptions** disponíveis
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### **Bibliotecas Especializadas**
+- **Mapbox GL JS 3.14.0** + React Map GL 8.0.4 para mapas
+- **jsPDF 3.0.2** + jsPDF-autotable 5.0.2 para geração de PDFs
+- **Recharts 2.15.4** para gráficos e visualizações
+- **date-fns 3.6.0** para manipulação de datas
+- **Sonner 1.7.4** para notificações
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 🏗️ Arquitetura do Projeto
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+data-green/
+├── 📁 public/                  # Arquivos estáticos e locales
+├── 📁 src/
+│   ├── 📁 assets/             # Imagens e recursos
+│   ├── 📁 components/         # Componentes React
+│   │   ├── 📁 admin/         # Componentes administrativos
+│   │   ├── 📁 auth/          # Autenticação
+│   │   ├── 📁 forms/         # Formulários especializados
+│   │   ├── 📁 layout/        # Layout responsivo
+│   │   └── 📁 ui/            # Componentes base (shadcn/ui)
+│   ├── 📁 hooks/             # Custom hooks
+│   ├── 📁 integrations/      # Integrações externas
+│   ├── 📁 pages/             # Páginas da aplicação
+│   └── 📁 lib/               # Utilitários e configurações
+├── 📁 supabase/
+│   ├── 📁 functions/         # Edge Functions
+│   ├── 📁 migrations/        # 17+ migrações do banco
+│   └── 📄 config.toml        # Configuração Supabase
+└── 📄 [arquivos de configuração]
 ```
 
-**Edit a file directly in GitHub**
+## 🚀 Instalação e Execução
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### **Pré-requisitos**
+- Node.js 18+ ([instalar com nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
+- npm ou yarn
+- Conta no Supabase
 
-**Use GitHub Codespaces**
+### **Configuração Local**
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. **Clone o repositório**
+```bash
+git clone <URL_DO_REPOSITORIO>
+cd data-green
+```
 
-## What technologies are used for this project?
+2. **Instale as dependências**
+```bash
+npm install
+# ou
+yarn install
+```
 
-This project is built with:
+3. **Configure as variáveis de ambiente**
+```bash
+cp .env.example .env
+# Edite o arquivo .env com suas credenciais do Supabase
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+4. **Execute o projeto**
+```bash
+npm run dev
+# ou
+yarn dev
+```
 
-## How can I deploy this project?
+5. **Acesse a aplicação**
+```
+http://localhost:5173
+```
 
-Simply open [Lovable](https://lovable.dev/projects/fe577cb0-540f-48c4-be6b-33c6ff96bc17) and click on Share -> Publish.
+### **Build para Produção**
+```bash
+npm run build
+npm run preview
+```
 
-## Can I connect a custom domain to my Lovable project?
+## 🔐 Sistema de Permissões
 
-Yes, you can!
+### **Tipos de Usuário**
+- **🔧 Admin Global** - Acesso total ao sistema
+- **👑 Master ONG** - Gerencia uma ONG específica
+- **👤 Colaborador ONG** - Acesso limitado aos projetos da ONG
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### **Segurança Implementada**
+- ✅ Row Level Security (RLS) no Supabase
+- ✅ Autenticação JWT via Supabase Auth
+- ✅ Validação client-side e server-side
+- ✅ Auditoria completa de acessos sensíveis
+- ✅ Isolamento de dados por organização
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 📊 Cálculo Automático do IDH
+
+O sistema calcula automaticamente o IDH das comunidades baseado em três dimensões:
+
+### **🏥 Longevidade** (70% idade + 30% saúde)
+- Idade média dos beneficiários
+- Indicadores de IMC e saúde
+
+### **🎓 Educação**
+- Nível de escolaridade
+- Anos de estudo completados
+
+### **💰 Renda**
+- Faixa de renda familiar
+- Distribuição socioeconômica
+
+**Fórmula**: `IDH = (Longevidade × Educação × Renda)^(1/3)`
+
+## 🗺️ Páginas da Aplicação
+
+| Rota | Descrição | Funcionalidades |
+|------|-----------|-----------------|
+| `/` | Landing page | Autenticação e apresentação |
+| `/dashboard` | Painel principal | Métricas, mapa interativo, setup |
+| `/communities` | Gestão de comunidades | CRUD completo com cálculo de IDH |
+| `/projects` | Gestão de projetos | Status, orçamento, categorização |
+| `/people` | Gestão de beneficiários | Relacionamento N:N, indicadores |
+| `/investors` | Gestão de investidores | Tipos, documentos, validação |
+| `/aportes` | Gestão financeira | Contribuições por projeto |
+| `/project-evolution` | Evolução de projetos | Marcos, desafios, progresso |
+| `/person-evolution` | Evolução de pessoas | Saúde, educação, renda |
+| `/reports` | Hub de relatórios | Navegação para diferentes tipos |
+| `/annual-report` | Relatórios anuais | PDFs de transparência |
+| `/strategic-report` | Relatórios estratégicos | Apresentações para investidores |
+| `/admin` | Painel administrativo | Gestão global do sistema |
+
+## 🎨 Design System
+
+### **Paleta de Cores**
+- **🟢 Primary**: `hsl(142 76% 36%)` - Verde sustentabilidade
+- **⚪ Background**: `hsl(0 0% 100%)` - Branco puro
+- **🔵 Info**: `hsl(221.2 83.2% 53.3%)` - Azul informativo
+- **🟡 Warning**: `hsl(38 92% 50%)` - Amarelo alerta
+- **🔴 Destructive**: `hsl(0 84.2% 60.2%)` - Vermelho erro
+
+### **Componentes UI**
+- 50+ componentes shadcn/ui customizados
+- Design responsivo mobile-first
+- Modo escuro implementado
+- Acessibilidade WCAG 2.1
+
+## 📈 Performance e Otimizações
+
+### **Frontend**
+- ⚡ Lazy loading de componentes
+- 🔄 Cache inteligente com React Query
+- 📱 Layout responsivo sem JavaScript adicional
+- 💾 Persistência de estado no localStorage
+
+### **Backend**
+- 🗃️ Indexes otimizados para queries frequentes
+- 🔄 Triggers automáticos eficientes
+- 📊 Consultas paralelas no dashboard
+- 🔒 Funções stored procedures para cálculos complexos
+
+## 🤝 Contribuição
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## 🏆 Desenvolvido por
+
+**CreateHack - Grupo 17 - Data Green**
+
+---
+
+<div align="center">
+
+**🌱 Transformando dados em impacto social positivo 🌱**
+
+*Versão 2.0.0 - Desenvolvido com ❤️ para o terceiro setor*
+
+</div>

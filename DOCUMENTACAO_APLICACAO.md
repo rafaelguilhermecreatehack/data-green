@@ -2,7 +2,7 @@
 
 ## Contexto da Aplicação
 
-**Data Green** é uma plataforma completa de gestão para ONGs e organizações do terceiro setor, focada no monitoramento de impacto social e cálculo automatizado do Índice de Desenvolvimento Humano (IDH). A aplicação permite o gerenciamento completo de projetos sociais, beneficiários, investidores, aportes financeiros e geração de relatórios profissionais.
+**Data Green** é uma plataforma completa de gestão para ONGs e organizações do terceiro setor, focada no monitoramento de impacto social e cálculo automatizado do Índice de Desenvolvimento Humano (IDH). A aplicação permite o gerenciamento completo de projetos sociais, beneficiários, investidores, aportes financeiros, evolução de projetos e pessoas, além da geração de relatórios estratégicos profissionais.
 
 ### Propósito
 - Facilitar a gestão completa de ONGs e projetos sociais
@@ -34,6 +34,11 @@
 - **Gerenciamento de Estado**: TanStack React Query 5.83.0
 - **Formulários**: React Hook Form 7.61.1 + Zod 3.25.76
 - **UI Components**: Radix UI primitives
+- **Mapas**: Mapbox GL JS 3.14.0 + React Map GL 8.0.4
+- **PDF Generation**: jsPDF 3.0.2 + jsPDF-autotable 5.0.2
+- **Charts**: Recharts 2.15.4
+- **Date Handling**: date-fns 3.6.0
+- **Notifications**: Sonner 1.7.4
 
 ### Arquitetura do Projeto
 ```
@@ -61,16 +66,19 @@ ong-harmony/
 
 ### Páginas Principais
 1. **Index** (`/`) - Landing page e autenticação
-2. **Dashboard** (`/dashboard`) - Painel principal do usuário
+2. **Dashboard** (`/dashboard`) - Painel principal com métricas e mapa interativo
 3. **Communities** (`/communities`) - Gestão de comunidades
 4. **Projects** (`/projects`) - Gestão de projetos sociais
-5. **People** (`/people`) - Gestão de beneficiários/pessoas
+5. **People** (`/people`) - Gestão de beneficiários/pessoas com relacionamento N:N com projetos
 6. **Investors** (`/investors`) - Gestão de investidores
 7. **Aportes** (`/aportes`) - Gestão de contribuições financeiras
 8. **Project Evolution** (`/project-evolution`) - Acompanhamento da evolução de projetos
 9. **Person Evolution** (`/person-evolution`) - Acompanhamento da evolução de pessoas
-10. **Admin** (`/admin`) - Painel administrativo global
-11. **NotFound** (`/*`) - Página 404 para rotas não encontradas
+10. **Reports** (`/reports`) - Hub central de relatórios
+11. **Annual Report** (`/annual-report`) - Geração de relatórios anuais em PDF
+12. **Strategic Report** (`/strategic-report`) - Relatórios estratégicos para investidores
+13. **Admin** (`/admin`) - Painel administrativo global
+14. **NotFound** (`/*`) - Página 404 para rotas não encontradas
 
 ---
 
@@ -371,6 +379,12 @@ END
 - Cultura
 - Direitos Humanos
 
+#### Relacionamento com Pessoas
+- **Relacionamento N:N**: Uma pessoa pode participar de múltiplos projetos
+- **Tabela de Junção**: `pessoa_projeto` com campos `id_pessoa`, `id_projeto`, `data_vinculacao`, `ativo`
+- **Migração de Dados**: Sistema migrou de relacionamento 1:1 para N:N preservando dados existentes
+- **Funções Helper**: `get_person_projects()` e `get_project_people()` para consultas otimizadas
+
 ### 5. Sistema de Aportes
 
 #### Tipos de Investidores
@@ -448,18 +462,40 @@ CREATE TRIGGER trigger_update_community_idh
 
 ---
 
+## Funcionalidades Avançadas Recentes
+
+### Sistema de Relatórios Profissionais
+- **Relatórios Anuais**: PDFs completos com dados organizacionais, financeiros e de transparência
+- **Relatórios Estratégicos**: Análises focadas em investidores com métricas de performance e insights
+- **Configuração Flexível**: Formulários para personalizar seções incluídas nos relatórios
+- **Dados em Tempo Real**: Integração direta com banco de dados para informações atualizadas
+- **Design Profissional**: Layout otimizado para apresentações corporativas
+
+### Dashboard Avançado com Mapbox
+- **Mapa Interativo**: Visualização geográfica das comunidades usando Mapbox GL JS
+- **Métricas em Tempo Real**: Cálculos automáticos de KPIs e distribuições
+- **Setup Inicial Guiado**: Modal obrigatório para configuração de comunidades
+- **Status de Configuração**: Indicadores visuais do progresso de setup da conta
+- **Responsividade Completa**: Layout adaptativo para todos os dispositivos
+
+### Relacionamentos N:N Implementados
+- **Pessoas ↔ Projetos**: Uma pessoa pode participar de múltiplos projetos simultaneamente
+- **Migração Automática**: Dados existentes preservados durante a transição
+- **Interface Otimizada**: Seleção múltipla com checkboxes e badges visuais
+- **Funções Helper**: Consultas otimizadas para relacionamentos complexos
+
 ## Próximos Passos Sugeridos
 
-1. **Implementação de Relatórios**: Sistema de geração de PDFs com métricas de evolução
-2. **Dashboard Analytics**: Gráficos interativos com Chart.js ou Recharts
-3. **Notificações**: Sistema de alertas para marcos de projetos
-4. **API Externa**: Integração com dados do IBGE para IDH oficial
-5. **Mobile App**: PWA ou React Native
-6. **Backup Automático**: Integração com AWS S3 ou similar
-7. **Auditoria Avançada**: Log detalhado de todas as operações CRUD
-8. **Análise de Impacto**: Comparação de IDH antes/depois dos projetos
-9. **Gamificação**: Sistema de conquistas para beneficiários
-10. **Integração WhatsApp**: Notificações via API do WhatsApp Business
+1. **Notificações Push**: Sistema de alertas para marcos de projetos e evoluções
+2. **API Externa IBGE**: Integração com dados oficiais do IDH para comparação
+3. **PWA**: Transformar em Progressive Web App para uso offline
+4. **Backup Automático**: Integração com AWS S3 ou Google Cloud Storage
+5. **Analytics Avançado**: Dashboards com Recharts para análises temporais
+6. **Gamificação**: Sistema de conquistas e metas para beneficiários
+7. **Integração WhatsApp Business**: Notificações automáticas via API
+8. **Exportação de Dados**: Funcionalidades de export em Excel/CSV
+9. **Auditoria Forense**: Logs detalhados de todas as operações sensíveis
+10. **Machine Learning**: Predição de sucesso de projetos baseada em dados históricos
 
 ---
 
@@ -467,16 +503,18 @@ CREATE TRIGGER trigger_update_community_idh
 
 ### Componentes Principais Identificados
 
-#### Forms (9 componentes especializados)
+#### Forms (11 componentes especializados)
 - **AportesForm.tsx**: Gestão de contribuições financeiras com validação de valores
 - **CommunityForm.tsx**: Cadastro de comunidades com cálculo automático de IDH
 - **InvestorForm.tsx**: Gestão de investidores com validação de documentos (CPF/CNPJ)
-- **PeopleForm.tsx**: Cadastro de beneficiários com indicadores de saúde (IMC automático)
+- **PeopleForm.tsx**: Cadastro de beneficiários com relacionamento N:N com projetos e indicadores de saúde
 - **ProjectForm.tsx**: Gestão de projetos com categorização e orçamento
 - **ProjectEvolutionForm.tsx**: Registro de evolução de projetos com marcos e desafios
 - **PersonEvolutionForm.tsx**: Registro de evolução de pessoas com indicadores de saúde e progresso
 - **OngRegistrationForm.tsx**: Registro de organizações
 - **CommunityRegistrationForm.tsx**: Setup inicial obrigatório para novos usuários
+- **AnnualReportForm.tsx**: Configuração de relatórios anuais com dados organizacionais
+- **StrategicReportForm.tsx**: Configuração de relatórios estratégicos para investidores
 
 #### Layout Responsivo (4 componentes)
 - **Layout.tsx**: Layout principal da aplicação com responsividade automática
@@ -484,15 +522,18 @@ CREATE TRIGGER trigger_update_community_idh
 - **BottomBar.tsx**: Navegação inferior para dispositivos móveis
 - **Navbar.tsx**: Componente de navegação adaptativo (deprecated - substituído pelo Layout)
 
-#### Páginas CRUD Completas (9 páginas)
-- **Dashboard.tsx**: Painel principal com métricas e indicadores
+#### Páginas CRUD Completas (12 páginas)
+- **Dashboard.tsx**: Painel principal com métricas, mapa interativo Mapbox e configuração inicial
 - **Communities.tsx**: CRUD completo de comunidades
 - **Projects.tsx**: CRUD completo de projetos
-- **People.tsx**: CRUD completo de pessoas/beneficiários
+- **People.tsx**: CRUD completo de pessoas/beneficiários com relacionamento N:N
 - **Investors.tsx**: CRUD completo de investidores
 - **Aportes.tsx**: CRUD completo de contribuições financeiras
 - **ProjectEvolution.tsx**: CRUD completo de evolução de projetos
 - **PersonEvolution.tsx**: CRUD completo de evolução de pessoas
+- **Reports.tsx**: Hub central de relatórios com navegação para diferentes tipos
+- **AnnualReport.tsx**: Geração de relatórios anuais em PDF com dados em tempo real
+- **StrategicReport.tsx**: Relatórios estratégicos com análise de performance e insights
 - **Admin.tsx**: Painel administrativo global
 
 ### Funcionalidades Avançadas Implementadas
@@ -563,19 +604,118 @@ CREATE FUNCTION can_access_financial_data() RETURNS BOOLEAN;
 - **Autenticação**: Supabase Auth com perfis customizados
 
 ### Funcionalidades Implementadas
-- ✅ **CRUD Completo**: 7 entidades principais
-- ✅ **Sistema de Evolução**: Acompanhamento de projetos e pessoas
-- ✅ **Cálculo Automático de IDH**: Baseado em dados reais
-- ✅ **Dashboard Interativo**: Métricas em tempo real
-- ✅ **Layout Responsivo**: Desktop e mobile
-- ✅ **Sistema de Permissões**: RLS com 3 níveis de acesso
-- ✅ **Validação Robusta**: Frontend e backend
-- ✅ **Auditoria Básica**: Timestamps e usuário responsável
+- ✅ **CRUD Completo**: 8 entidades principais com relacionamentos N:N
+- ✅ **Sistema de Evolução**: Acompanhamento detalhado de projetos e pessoas
+- ✅ **Cálculo Automático de IDH**: Baseado em dados reais com triggers automáticos
+- ✅ **Dashboard Interativo**: Métricas em tempo real com mapa Mapbox integrado
+- ✅ **Sistema de Relatórios**: Relatórios anuais e estratégicos em PDF
+- ✅ **Layout Responsivo**: Desktop e mobile com sidebar colapsável
+- ✅ **Sistema de Permissões**: RLS com 3 níveis de acesso granular
+- ✅ **Validação Robusta**: Frontend (Zod) e backend (PostgreSQL constraints)
+- ✅ **Auditoria Completa**: Timestamps, usuário responsável e log de acessos sensíveis
+- ✅ **Mapas Interativos**: Visualização geográfica das comunidades
+- ✅ **Geração de PDFs**: Relatórios profissionais com dados em tempo real
+- ✅ **Relacionamentos Complexos**: Suporte a relacionamentos N:N entre entidades
 
 ---
 
-*Documentação atualizada em: 31/08/2025 às 03:49*
-*Versão da aplicação: 1.0.0*
+---
+
+## Análise Técnica Detalhada da Implementação Atual
+
+### Componentes de Relatórios Implementados
+
+#### StrategicReportForm.tsx
+- **Configuração Avançada**: Seleção de período, informações organizacionais e seções do relatório
+- **Validação Zod**: Schema completo com validação de datas, textos obrigatórios e opcionais
+- **Interface Intuitiva**: Cards organizados por categoria com checkboxes para seleção de seções
+- **Campos Contextuais**: Missão, visão, objetivos alcançados, desafios e próximos passos
+- **Date Pickers**: Componentes de calendário com localização em português brasileiro
+
+#### StrategicReport.tsx
+- **Agregação de Dados**: Consultas paralelas otimizadas para todas as entidades do sistema
+- **Cálculos Estratégicos**: Taxa de sucesso, métricas de impacto, análise financeira
+- **Geração de PDF**: jsPDF com tabelas automáticas e formatação profissional
+- **Dashboard em Tempo Real**: Métricas visuais para apresentação antes da geração do PDF
+- **Análise de Evolução**: Integração com dados de evolução de projetos e pessoas
+
+#### Reports.tsx (Hub Central)
+- **Interface de Navegação**: Cards interativos para diferentes tipos de relatórios
+- **Descrições Detalhadas**: Explicação clara do propósito de cada relatório
+- **Tags Visuais**: Indicadores das funcionalidades incluídas em cada tipo
+- **Design Responsivo**: Layout adaptativo com hover effects e transições
+
+### Sidebar Avançada com Persistência
+
+#### Funcionalidades Implementadas
+- **Estado Persistente**: localStorage para manter preferência de colapso
+- **Tooltips Contextuais**: Informações sobre cada item quando colapsada
+- **Controle de Acesso**: Itens administrativos visíveis apenas para admins
+- **Logout Integrado**: Botão de saída com confirmação via toast
+- **Responsividade**: Adaptação automática para dispositivos móveis
+- **Eventos Customizados**: Comunicação com Layout via window events
+
+### Dashboard com Mapbox Integration
+
+#### Métricas Calculadas em Tempo Real
+- **Projetos**: Total, ativos, distribuição por status e categoria
+- **Pessoas**: Total de beneficiários impactados
+- **Comunidades**: Locais de atuação com ranking por número de projetos
+- **Financeiro**: Aportes totais, contribuições mensais, média por projeto
+- **Performance**: Taxa de sucesso baseada em projetos concluídos
+
+#### Componentes Visuais Avançados
+- **Cards de Métricas**: Indicadores com ícones e descrições contextuais
+- **Gráficos de Progresso**: Barras de progresso para distribuição de status
+- **Mapa Interativo**: Visualização geográfica usando Mapbox GL JS
+- **Setup Wizard**: Modal obrigatório para configuração inicial de comunidades
+- **Status de Configuração**: Badges visuais indicando progresso do setup
+
+### Relacionamento N:N Pessoas ↔ Projetos
+
+#### Implementação Técnica
+- **Tabela de Junção**: `pessoa_projeto` com campos de controle temporal
+- **Migração de Dados**: Preservação de relacionamentos existentes durante transição
+- **Funções Helper**: `get_person_projects()` e `get_project_people()` para consultas otimizadas
+- **Interface Atualizada**: Checkboxes múltiplos com badges visuais de projetos selecionados
+- **Validação**: Pelo menos um projeto obrigatório por pessoa
+
+### Arquitetura de Dados Avançada
+
+#### Triggers Automáticos
+- **IDH Calculation**: Recálculo automático quando dados de pessoas são modificados
+- **Timestamps**: Atualização automática de `created_at` e `updated_at`
+- **Audit Trail**: Log automático de acessos a dados sensíveis
+- **Data Integrity**: Constraints para manter consistência relacional
+
+#### Row Level Security (RLS)
+- **Políticas Granulares**: Acesso baseado no papel do usuário e ONG
+- **Funções de Segurança**: `get_user_role()`, `get_user_ong()`, `can_access_ong()`
+- **Auditoria de Acesso**: Função `log_sensitive_access()` para dados financeiros
+- **Isolamento de Dados**: Usuários só acessam dados de sua organização
+
+### Performance e Otimizações
+
+#### Frontend Optimizations
+- **React Query**: Cache inteligente com invalidação automática
+- **Lazy Loading**: Componentes carregados sob demanda
+- **Memoização**: Prevenção de re-renders desnecessários
+- **Parallel Queries**: Múltiplas consultas executadas simultaneamente
+- **LocalStorage**: Persistência de estado da sidebar entre sessões
+
+#### Database Optimizations
+- **Indexes Estratégicos**: Otimizados para queries frequentes de evolução
+- **Consultas Paralelas**: Promise.all para agregação de métricas do dashboard
+- **Funções Stored**: Cálculos complexos executados no banco de dados
+- **Triggers Eficientes**: Atualizações automáticas sem overhead desnecessário
+
+---
+
+*Documentação atualizada em: 31/08/2025 às 09:09*
+*Versão da aplicação: 2.0.0*
 *Desenvolvido para CreateHack - Grupo 17 - Data Green*
 *Análise técnica completa e profunda realizada*
-*Total de linhas analisadas: 2000+ linhas de código*
+*Total de linhas analisadas: 4000+ linhas de código*
+*Funcionalidades implementadas: 15+ módulos principais*
+*Migrações de banco: 17 arquivos SQL*
+*Componentes React: 50+ componentes especializados*
