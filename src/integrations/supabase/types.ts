@@ -345,6 +345,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      audit_log_access: {
+        Args: { operation: string; record_id: string; table_name: string }
+        Returns: undefined
+      }
       calculate_community_idh: {
         Args: { community_id: string }
         Returns: number

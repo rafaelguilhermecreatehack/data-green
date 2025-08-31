@@ -5,11 +5,21 @@ enabled = true
 site_url = "https://qbhwlsyhnzihuqhnngna.supabase.co"
 additional_redirect_urls = ["https://localhost:3000"]
 jwt_expiry = 3600
+# Recommended security settings
+max_enrolled_factors = 10
+password_min_length = 8
 
 [auth.email]
 enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
+# Security: Reduced OTP expiry for better security
+otp_expiry = 300  # 5 minutes instead of default 24 hours
+
+[auth.security]
+# Enhanced password security
+captcha_enabled = false
+password_min_length = 8
 
 [functions.send-ong-registration]
 verify_jwt = false
