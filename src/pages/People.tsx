@@ -1,4 +1,8 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Header from "@/components/layout/Header";
+import PageHeader from "@/components/layout/PageHeader";
+import Breadcrumb from "@/components/layout/Breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -67,6 +71,7 @@ const People = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingPerson, setEditingPerson] = useState<Person | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const fetchPeople = async () => {
@@ -211,18 +216,16 @@ const People = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+      <Header />
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">
-              Gestão de Pessoas
-            </h1>
-            <p className="text-muted-foreground">
-              Gerencie os beneficiários dos projetos da sua organização
-            </p>
-          </div>
+        {/* Breadcrumb */}
+        <Breadcrumb items={[{ label: "Pessoas", current: true }]} />
 
+        {/* Header */}
+        <PageHeader 
+          title="Gestão de Pessoas"
+          description="Gerencie os beneficiários dos projetos da sua organização"
+        >
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button className="bg-primary hover:bg-primary/90">
@@ -237,7 +240,7 @@ const People = () => {
               <PeopleForm onSuccess={handleCreateSuccess} />
             </DialogContent>
           </Dialog>
-        </div>
+        </PageHeader>
 
         {/* Search */}
         <div className="relative mb-6">

@@ -1,4 +1,8 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Header from "@/components/layout/Header";
+import PageHeader from "@/components/layout/PageHeader";
+import Breadcrumb from "@/components/layout/Breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,6 +70,7 @@ const Aportes = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingAporte, setEditingAporte] = useState<Aporte | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const fetchAportes = async () => {
@@ -199,25 +204,21 @@ const Aportes = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+      <Header />
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">
-              Gestão de Aportes
-            </h1>
-            <p className="text-muted-foreground">
-              Gerencie os aportes e contribuições dos investidores para os projetos
-            </p>
-            {filteredAportes.length > 0 && (
-              <div className="mt-2">
-                <Badge variant="outline" className="text-sm">
-                  Total: {formatCurrency(getTotalAportes())}
-                </Badge>
-              </div>
-            )}
-          </div>
+        {/* Breadcrumb */}
+        <Breadcrumb items={[{ label: "Aportes", current: true }]} />
 
+        {/* Header */}
+        <PageHeader 
+          title="Gestão de Aportes"
+          description="Gerencie os aportes e contribuições dos investidores para os projetos"
+        >
+          {filteredAportes.length > 0 && (
+            <Badge variant="outline" className="text-sm mr-3">
+              Total: {formatCurrency(getTotalAportes())}
+            </Badge>
+          )}
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button className="bg-primary hover:bg-primary/90">
@@ -232,7 +233,7 @@ const Aportes = () => {
               <AportesForm onSuccess={handleCreateSuccess} />
             </DialogContent>
           </Dialog>
-        </div>
+        </PageHeader>
 
         {/* Search */}
         <div className="relative mb-6">
