@@ -369,6 +369,10 @@ export type Database = {
         Args: { action: string; record_id: string; table_name: string }
         Returns: undefined
       }
+      validate_password_strength: {
+        Args: { password: string }
+        Returns: boolean
+      }
     }
     Enums: {
       education_level:
