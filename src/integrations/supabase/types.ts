@@ -95,6 +95,159 @@ export type Database = {
         }
         Relationships: []
       }
+      evolucao_pessoa: {
+        Row: {
+          altura_anterior: number | null
+          altura_atual: number | null
+          anos_estudo_anterior: number | null
+          anos_estudo_atual: number | null
+          conquistas_educacionais: string | null
+          created_at: string
+          data_registro: string
+          faixa_renda_anterior: string | null
+          faixa_renda_atual: string | null
+          id: string
+          id_pessoa: string
+          imc_anterior: number | null
+          imc_atual: number | null
+          melhorias_saude: string | null
+          mudancas_socioeconomicas: string | null
+          nivel_escolaridade_anterior: string | null
+          nivel_escolaridade_atual: string | null
+          nivel_participacao: string | null
+          observacoes: string | null
+          peso_anterior: number | null
+          peso_atual: number | null
+          registrado_por: string
+          updated_at: string
+        }
+        Insert: {
+          altura_anterior?: number | null
+          altura_atual?: number | null
+          anos_estudo_anterior?: number | null
+          anos_estudo_atual?: number | null
+          conquistas_educacionais?: string | null
+          created_at?: string
+          data_registro?: string
+          faixa_renda_anterior?: string | null
+          faixa_renda_atual?: string | null
+          id?: string
+          id_pessoa: string
+          imc_anterior?: number | null
+          imc_atual?: number | null
+          melhorias_saude?: string | null
+          mudancas_socioeconomicas?: string | null
+          nivel_escolaridade_anterior?: string | null
+          nivel_escolaridade_atual?: string | null
+          nivel_participacao?: string | null
+          observacoes?: string | null
+          peso_anterior?: number | null
+          peso_atual?: number | null
+          registrado_por: string
+          updated_at?: string
+        }
+        Update: {
+          altura_anterior?: number | null
+          altura_atual?: number | null
+          anos_estudo_anterior?: number | null
+          anos_estudo_atual?: number | null
+          conquistas_educacionais?: string | null
+          created_at?: string
+          data_registro?: string
+          faixa_renda_anterior?: string | null
+          faixa_renda_atual?: string | null
+          id?: string
+          id_pessoa?: string
+          imc_anterior?: number | null
+          imc_atual?: number | null
+          melhorias_saude?: string | null
+          mudancas_socioeconomicas?: string | null
+          nivel_escolaridade_anterior?: string | null
+          nivel_escolaridade_atual?: string | null
+          nivel_participacao?: string | null
+          observacoes?: string | null
+          peso_anterior?: number | null
+          peso_atual?: number | null
+          registrado_por?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evolucao_pessoa_id_pessoa_fkey"
+            columns: ["id_pessoa"]
+            isOneToOne: false
+            referencedRelation: "pessoas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evolucao_pessoa_registrado_por_fkey"
+            columns: ["registrado_por"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      evolucao_projeto: {
+        Row: {
+          created_at: string
+          data_registro: string
+          desafios_enfrentados: string | null
+          id: string
+          id_projeto: string
+          marcos_alcancados: string | null
+          observacoes: string | null
+          proximos_passos: string | null
+          registrado_por: string
+          status_anterior: string | null
+          status_atual: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_registro?: string
+          desafios_enfrentados?: string | null
+          id?: string
+          id_projeto: string
+          marcos_alcancados?: string | null
+          observacoes?: string | null
+          proximos_passos?: string | null
+          registrado_por: string
+          status_anterior?: string | null
+          status_atual: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_registro?: string
+          desafios_enfrentados?: string | null
+          id?: string
+          id_projeto?: string
+          marcos_alcancados?: string | null
+          observacoes?: string | null
+          proximos_passos?: string | null
+          registrado_por?: string
+          status_anterior?: string | null
+          status_atual?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evolucao_projeto_id_projeto_fkey"
+            columns: ["id_projeto"]
+            isOneToOne: false
+            referencedRelation: "projetos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evolucao_projeto_registrado_por_fkey"
+            columns: ["registrado_por"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       investidores: {
         Row: {
           contato: string | null
@@ -166,57 +319,48 @@ export type Database = {
       }
       pessoas: {
         Row: {
+          altura: number | null
           anos_estudo: number | null
           created_at: string | null
-          data_nascimento: string
-          faixa_renda_familiar:
-            | Database["public"]["Enums"]["income_range"]
-            | null
+          data_nascimento: string | null
+          faixa_renda_familiar: Database["public"]["Enums"]["income_range"] | null
           genero: string | null
           id: string
-          id_comunidade: string
-          id_projeto_vinculado: string
-          indicadores_saude: Json | null
-          nivel_escolaridade:
-            | Database["public"]["Enums"]["education_level"]
-            | null
+          id_comunidade: string | null
+          id_projeto_vinculado: string | null
+          nivel_escolaridade: Database["public"]["Enums"]["education_level"] | null
           nome_completo: string
+          peso: number | null
           updated_at: string | null
         }
         Insert: {
+          altura?: number | null
           anos_estudo?: number | null
           created_at?: string | null
-          data_nascimento: string
-          faixa_renda_familiar?:
-            | Database["public"]["Enums"]["income_range"]
-            | null
+          data_nascimento?: string | null
+          faixa_renda_familiar?: Database["public"]["Enums"]["income_range"] | null
           genero?: string | null
           id?: string
-          id_comunidade: string
-          id_projeto_vinculado: string
-          indicadores_saude?: Json | null
-          nivel_escolaridade?:
-            | Database["public"]["Enums"]["education_level"]
-            | null
+          id_comunidade?: string | null
+          id_projeto_vinculado?: string | null
+          nivel_escolaridade?: Database["public"]["Enums"]["education_level"] | null
           nome_completo: string
+          peso?: number | null
           updated_at?: string | null
         }
         Update: {
+          altura?: number | null
           anos_estudo?: number | null
           created_at?: string | null
-          data_nascimento?: string
-          faixa_renda_familiar?:
-            | Database["public"]["Enums"]["income_range"]
-            | null
+          data_nascimento?: string | null
+          faixa_renda_familiar?: Database["public"]["Enums"]["income_range"] | null
           genero?: string | null
           id?: string
-          id_comunidade?: string
-          id_projeto_vinculado?: string
-          indicadores_saude?: Json | null
-          nivel_escolaridade?:
-            | Database["public"]["Enums"]["education_level"]
-            | null
+          id_comunidade?: string | null
+          id_projeto_vinculado?: string | null
+          nivel_escolaridade?: Database["public"]["Enums"]["education_level"] | null
           nome_completo?: string
+          peso?: number | null
           updated_at?: string | null
         }
         Relationships: [

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "@/components/layout/Header";
+import { Layout } from "@/components/layout/Layout";
 import PageHeader from "@/components/layout/PageHeader";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import { Button } from "@/components/ui/button";
@@ -213,9 +213,9 @@ const Investors = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
-      <Header />
-      <div className="container mx-auto px-4 py-8">
+    <Layout>
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+        <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <Breadcrumb items={[{ label: "Investidores", current: true }]} />
 
@@ -380,8 +380,9 @@ const Investors = () => {
             )}
           </DialogContent>
         </Dialog>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

@@ -1,20 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import { 
   Home, 
-  Users, 
+  Building, 
   FolderOpen, 
   User, 
   DollarSign, 
   TrendingUp, 
-  Settings,
-  ChevronLeft,
+  BarChart3, 
+  Activity, 
+  Settings, 
+  ChevronLeft, 
   ChevronRight,
-  Building
+  LogOut
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { useQuery } from '@tanstack/react-query';
 
 interface NavItem {
   name: string;
@@ -30,12 +40,25 @@ const navItems: NavItem[] = [
   { name: 'Pessoas', path: '/people', icon: User },
   { name: 'Investidores', path: '/investors', icon: DollarSign },
   { name: 'Aportes', path: '/aportes', icon: TrendingUp },
+  { name: 'Evolução Projetos', path: '/project-evolution', icon: BarChart3 },
+  { name: 'Evolução Pessoas', path: '/person-evolution', icon: Activity },
   { name: 'Admin', path: '/admin', icon: Settings, adminOnly: true },
 ];
 
 export const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // Get current user session
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      return user;
+    },
+  });
 
   // Load collapsed state from localStorage on mount
   useEffect(() => {
@@ -56,6 +79,23 @@ export const Sidebar: React.FC = () => {
 
   const isActive = (path: string) => {
     return location.pathname === path;
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "Logout realizado com sucesso",
+        description: "Você foi desconectado da plataforma",
+      });
+      navigate("/");
+    } catch (error) {
+      toast({
+        title: "Erro no logout",
+        description: "Tente novamente",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -95,49 +135,84 @@ export const Sidebar: React.FC = () => {
             </Button>
           </div>
 
-          {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-2">
+          {/* Navigation Items */}
+          <nav className="flex-1 px-2 py-4 space-y-1">
             {navItems.map((item) => {
+              // Check if item should be shown (admin items only for admin users)
+              if (item.adminOnly && !user?.user_metadata?.role?.includes('admin')) {
+                return null;
+              }
+
               const Icon = item.icon;
               const active = isActive(item.path);
-              
-              // Skip admin-only items for now (we'll add role checking later)
-              if (item.adminOnly) return null;
-
-              const linkContent = (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={cn(
-                    'flex items-center p-3 rounded-lg text-sm font-medium transition-colors',
-                    'hover:bg-muted hover:text-foreground',
-                    active 
-                      ? 'bg-primary text-primary-foreground shadow-sm' 
-                      : 'text-muted-foreground',
-                    isCollapsed ? 'justify-center' : 'justify-start'
-                  )}
-                >
-                  <Icon className={cn('h-5 w-5', !isCollapsed && 'mr-3')} />
-                  {!isCollapsed && <span>{item.name}</span>}
-                </Link>
-              );
 
               if (isCollapsed) {
                 return (
-                  <Tooltip key={item.name}>
+                  <Tooltip key={item.path}>
                     <TooltipTrigger asChild>
-                      {linkContent}
+                      <Link
+                        to={item.path}
+                        className={cn(
+                          'flex items-center justify-center h-10 w-10 rounded-lg transition-colors',
+                          active
+                            ? 'bg-primary text-primary-foreground'
+                            : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                        )}
+                      >
+                        <Icon className="h-5 w-5" />
+                      </Link>
                     </TooltipTrigger>
                     <TooltipContent side="right">
-                      <p>{item.name}</p>
+                      {item.name}
                     </TooltipContent>
                   </Tooltip>
                 );
               }
 
-              return linkContent;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={cn(
+                    'flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                    active
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                  )}
+                >
+                  <Icon className="mr-3 h-5 w-5" />
+                  {item.name}
+                </Link>
+              );
             })}
           </nav>
+
+          {/* Logout Button at Bottom */}
+          <div className="p-2 border-t border-border">
+            {isCollapsed ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center justify-center h-10 w-10 rounded-lg text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                  >
+                    <LogOut className="h-5 w-5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  Sair
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+              >
+                <LogOut className="mr-3 h-5 w-5" />
+                Sair
+              </button>
+            )}
+          </div>
         </div>
       </aside>
     </TooltipProvider>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { Sidebar } from './Sidebar';
 import { BottomBar } from './BottomBar';
-import Header from './Header';
 import { cn } from '@/lib/utils';
 
 interface LayoutProps {
@@ -40,8 +39,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-      
       {/* Desktop Sidebar */}
       {!isMobile && <Sidebar />}
       
